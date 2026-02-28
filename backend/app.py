@@ -1,4 +1,3 @@
-from models import Task  # noqa
 import os
 from datetime import datetime, timezone
 
