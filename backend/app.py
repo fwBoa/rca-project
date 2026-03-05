@@ -56,6 +56,7 @@ def health():
 
 @app.route("/api/tasks", methods=["GET"])
 def list_tasks():
+    """Récupère la liste des tâches avec filtres status et date."""
     db = get_db()
     cur = db.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     status = request.args.get("status")
@@ -85,6 +86,7 @@ def list_tasks():
 
 @app.route("/api/tasks", methods=["POST"])
 def create_task():
+    """Crée une nouvelle tâche et vide le cache Redis."""
     data = request.get_json()
     if not data or not data.get("title"):
         return jsonify({"error": "Title is required"}), 400
@@ -105,6 +107,7 @@ def create_task():
 
 @app.route("/api/tasks/<int:task_id>", methods=["PUT"])
 def update_task(task_id):
+    """Met à jour les informations d'une tâche existante."""
     data = request.get_json()
     db = get_db()
     cur = db.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -130,6 +133,7 @@ def update_task(task_id):
 
 @app.route("/api/tasks/<int:task_id>", methods=["DELETE"])
 def delete_task(task_id):
+    """Supprime définitivement une tâche de la base de données PostgreSQL via son identifiant unique."""
     db = get_db()
     cur = db.cursor()
     cur.execute("DELETE FROM tasks WHERE id = %s", (task_id,))
@@ -139,6 +143,7 @@ def delete_task(task_id):
 
 @app.route("/api/search", methods=["GET"])
 def search_tasks():
+    """Recherche des tâches par mot-clé (tître ou description)."""
     q = request.args.get("q", "")
     db = get_db()
     cur = db.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -156,6 +161,7 @@ def search_tasks():
 
 @app.route("/api/stats", methods=["GET"])
 def get_stats():
+    """Calcule les statistiques et les stocke dans Redis."""
     r = get_redis()
     cached = r.get("stats")
     if cached:
@@ -170,6 +176,7 @@ def get_stats():
     return jsonify(dict(stats))
 
 def warmup_cache():
+    """Tente de pré-charger les statistiques dans Redis au démarrage du serveur (Désactivé pour prévenir un Deadlock)."""
     try:
         r = redis.from_url(REDIS_URL)
         r.ping()
