@@ -1,5 +1,7 @@
 from models import Task  # noqa
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from datetime import datetime, timezone
 
 from flask import Flask, jsonify, request, g
@@ -9,7 +11,7 @@ import redis
 
 app = Flask(__name__)
 
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgres://taskuser:taskpass@database:5432/taskdb")
+DATABASE_URL = os.environ.get("DATABASE_URL", "postgres://taskuser:taskpass@db:5432/taskdb")
 REDIS_URL = os.environ["REDIS_URL"]
 
 search_history = []
@@ -169,5 +171,5 @@ def get_stats():
 
 # warmup_cache deleted 
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+ # if __name__ == "__main__":
+   # app.run(host="0.0.0.0", port=8000, debug=True)
