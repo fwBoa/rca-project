@@ -1,0 +1,53 @@
+name: RCA Project CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  backend-checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run Black formatter check
+      run: black --check .
+    - name: Run Flake8 linter
+      run: flake8 .
+    - name: Run Bandit security scan
+      run: bandit -r .
+    - name: Run Mypy type checks
+      run: mypy .
+    - name: Run Pytest with coverage
+      run: pytest --cov=app test_app.py
+
+  frontend-checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js 18
+      uses: actions/setup-node@v3
+      with:
+        node-version: "18.x"
+        cache: 'npm'
+        cache-dependency-path: './frontend/package-lock.json'
+    - name: Install dependencies
+      # Use npm install instead of npm ci based on our previous fix
+      run: npm install
+    - name: Run Jest tests with coverage
+      run: npm run test:coverage
