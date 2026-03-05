@@ -16,9 +16,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
-    depends_on:
-      - backend
+      - "6379:6379" # deleted depends_on, circular dependency
 
   backend:
     build: ./backend
@@ -43,4 +41,4 @@ services:
 
 volumes:
   postgres_data:
-
+  
