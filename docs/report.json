@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-03-05T14:34:40.134443+00:00",
+  "generated_at": "2026-03-05T15:06:16.811803+00:00",
   "checks": {
     "backend_builds": true,
     "frontend_builds": true,
-    "frontend_port": false,
+    "frontend_port": true,
     "redis_connected": true,
     "db_schema_valid": true,
     "backend_imports": true,
